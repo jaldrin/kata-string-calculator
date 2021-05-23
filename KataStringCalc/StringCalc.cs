@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KataStringCalc
@@ -24,11 +25,25 @@ namespace KataStringCalc
                 delimiters.Add(char.Parse(delimiter));
             }
 
+            RejectNegativeNumbers(numberString);
+
             var result = numberString.Split(delimiters.ToArray())
                                      .Select(n => int.Parse(n))
                                      .Sum();
 
             return result;
+        }
+
+        private void RejectNegativeNumbers(string numberString)
+        {
+            var negativeNumbers = numberString.Split(delimiters.ToArray())
+                                              .Select(n => int.Parse(n))
+                                              .Where(n => n < 0);
+            if (negativeNumbers.Any())
+            {
+                var numberList = string.Join(',', negativeNumbers);
+                throw new ArgumentException($"Negatives not allowed: {numberList}");
+            }
         }
     }
 }

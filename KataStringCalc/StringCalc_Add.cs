@@ -1,4 +1,5 @@
 using Shouldly;
+using System;
 using Xunit;
 
 namespace KataStringCalc
@@ -48,6 +49,15 @@ namespace KataStringCalc
         {
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData("-1,2", "Negatives not allowed: -1")]
+        [InlineData("2,-4,3,-5", "Negatives not allowed: -4,-5")]
+        public void NegativeNumbersThrowException(string stringValue, string expected)
+        {
+            var ex = Assert.Throws<ArgumentException>(()=> target.Add(stringValue));
+            ex.Message.ShouldBe(expected);
         }
     }
 }
