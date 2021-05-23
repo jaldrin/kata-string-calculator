@@ -56,7 +56,7 @@ namespace KataStringCalc
         [InlineData("2,-4,3,-5", "Negatives not allowed: -4,-5")]
         public void NegativeNumbersThrowException(string stringValue, string expected)
         {
-            var ex = Assert.Throws<ArgumentException>(()=> target.Add(stringValue));
+            var ex = Assert.Throws<ArgumentException>(() => target.Add(stringValue));
             ex.Message.ShouldBe(expected);
         }
 
@@ -73,6 +73,15 @@ namespace KataStringCalc
         [InlineData("//[|||]\n1|||2|||3", 6)]
         [InlineData("//[|||]\n1|||2,3\n4", 10)]     // Mixed edge case
         public void DelimitersCanBeAnyLength(string stringValue, int expected)
+        {
+            var actual = target.Add(stringValue);
+            actual.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData("//[|][%]\n1|2%3", 6)]
+        [InlineData("//[|][%]\n1|2%3\n4,5", 15)]     // Mixed edge case
+        public void AllowMultipleDelimiters(string stringValue, int expected)
         {
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);

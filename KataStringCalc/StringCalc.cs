@@ -7,6 +7,10 @@ namespace KataStringCalc
 {
     public class StringCalc
     {
+        /// <summary>
+        /// See https://regex101.com/r/hzYaRl/1 for explanation of pattern
+        /// </summary>
+        private const string regexPattern = @"\[(.+?)\]";
         public List<string> delimiters = new() { ",", "\n" };
 
         public int Add(string numbers)
@@ -34,11 +38,14 @@ namespace KataStringCalc
                                                   .First();
                 numberString = numberString.Substring(delimiterString.Length + 1);
 
-                var match = Regex.Match(delimiterString, @"\[(.+)\]");
-                if (match.Success)
+                var matches = Regex.Matches(delimiterString, regexPattern);
+                if (matches.Any())
                 {
-                    var delimiter = match.Groups[1].Value;
-                    delimiters.Add(delimiter);
+                    foreach (var match in matches.ToList())
+                    {
+                        var delimiter = match.Groups[1].Value;
+                        delimiters.Add(delimiter);
+                    }
                 }
                 else
                 {
