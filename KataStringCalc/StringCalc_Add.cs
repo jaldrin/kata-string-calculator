@@ -22,5 +22,15 @@ namespace KataStringCalc
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);
         }
+
+        [Theory]
+        [InlineData("1,2", 3)]
+        [InlineData("2,3,4", 9)]
+        public void NumbersCanHandleMultipleNumbers(string stringValue, int expected)
+        {
+            var target = new StringCalc();
+            var actual = target.Add(stringValue);
+            actual.ShouldBe(expected);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace KataStringCalc
+﻿using System.Linq;
+
+namespace KataStringCalc
 {
     public class StringCalc
     {
@@ -6,7 +8,9 @@
         {
             if (string.IsNullOrWhiteSpace(numbers)) return 0;
 
-            return int.Parse(numbers);
+            var result = numbers.Split(',').Select(n => int.Parse(n)).Sum();
+
+            return result;
         }
     }
 }
