@@ -59,5 +59,14 @@ namespace KataStringCalc
             var ex = Assert.Throws<ArgumentException>(()=> target.Add(stringValue));
             ex.Message.ShouldBe(expected);
         }
+
+        [Theory]
+        [InlineData("1001,2", 2)]
+        [InlineData("1000,2", 1002)]    // Edge case
+        public void NumbersGreaterThan1000ShouldBeIgnored(string stringValue, int expected)
+        {
+            var actual = target.Add(stringValue);
+            actual.ShouldBe(expected);
+        }
     }
 }

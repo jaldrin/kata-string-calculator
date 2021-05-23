@@ -29,6 +29,7 @@ namespace KataStringCalc
 
             var result = numberString.Split(delimiters.ToArray())
                                      .Select(n => int.Parse(n))
+                                     .Where(n => n <= 1000)
                                      .Sum();
 
             return result;
