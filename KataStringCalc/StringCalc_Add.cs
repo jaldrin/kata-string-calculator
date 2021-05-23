@@ -31,5 +31,13 @@ namespace KataStringCalc
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);
         }
+
+        [Theory]
+        [InlineData("1\n2,3", 6)]
+        public void NumbersCanHandleNewLines(string stringValue, int expected)
+        {
+            var actual = target.Add(stringValue);
+            actual.ShouldBe(expected);
+        }
     }
 }
