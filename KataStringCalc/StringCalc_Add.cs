@@ -43,8 +43,8 @@ namespace KataStringCalc
 
         [Theory]
         [InlineData("//;\n1;2", 3)]
-        [InlineData("//;\n1;2;3", 6)]
-        public void NumbersCanHandleDifferenDelimiter(string stringValue, int expected)
+        [InlineData("//;\n1;2\n3,4", 10)]
+        public void NumbersCanHandleDifferentDelimiter(string stringValue, int expected)
         {
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);
