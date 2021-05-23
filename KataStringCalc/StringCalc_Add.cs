@@ -34,7 +34,17 @@ namespace KataStringCalc
 
         [Theory]
         [InlineData("1\n2,3", 6)]
+        [InlineData("1,2\n3", 6)]
         public void NumbersCanHandleNewLines(string stringValue, int expected)
+        {
+            var actual = target.Add(stringValue);
+            actual.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData("//;\n1;2", 3)]
+        [InlineData("//;\n1;2;3", 6)]
+        public void NumbersCanHandleDifferenDelimiter(string stringValue, int expected)
         {
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);
