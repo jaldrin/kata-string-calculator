@@ -8,7 +8,8 @@ namespace KataStringCalc
     public class StringCalc
     {
         /// <summary>
-        /// See https://regex101.com/r/hzYaRl/1 for explanation of pattern
+        /// See https://regex101.com/r/hzYaRl/1 or https://regex101.com/r/eGkfcd/1
+        /// for explanation of pattern.
         /// </summary>
         private const string regexPattern = @"\[(.+?)\]";
         public List<string> delimiters = new() { ",", "\n" };
