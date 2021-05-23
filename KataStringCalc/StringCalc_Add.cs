@@ -68,5 +68,14 @@ namespace KataStringCalc
             var actual = target.Add(stringValue);
             actual.ShouldBe(expected);
         }
+
+        [Theory]
+        [InlineData("//[|||]\n1|||2|||3", 6)]
+        [InlineData("//[|||]\n1|||2,3\n4", 10)]     // Mixed edge case
+        public void DelimitersCanBeAnyLength(string stringValue, int expected)
+        {
+            var actual = target.Add(stringValue);
+            actual.ShouldBe(expected);
+        }
     }
 }
