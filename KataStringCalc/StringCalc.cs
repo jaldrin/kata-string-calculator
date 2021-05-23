@@ -36,7 +36,7 @@ namespace KataStringCalc
             {
                 var delimiterString = numberString.Split('\n')
                                                   .First();
-                numberString = numberString.Substring(delimiterString.Length + 1);
+                numberString = numberString[(delimiterString.Length + 1)..];
 
                 var matches = Regex.Matches(delimiterString, regexPattern);
                 if (matches.Any())
@@ -54,7 +54,6 @@ namespace KataStringCalc
                                                    .First();
                     delimiters.Add(delimiter);
                 }
-
             }
 
             return numberString;

@@ -16,6 +16,15 @@ namespace KataStringCalc
         }
 
         [Theory]
+        [InlineData("1,\n", "Input string was not in a correct format.")]
+        public void StringMustBeProperlyFormatted(string stringValue, string expected)
+        {
+            var ex = Assert.ThrowsAny<Exception>(() => target.Add(stringValue));
+            ex.Message.ShouldBe(expected);
+            ex.ShouldBeOfType<FormatException>();
+        }
+
+        [Theory]
         [InlineData("1", 1)]
         [InlineData("2", 2)]
         public void NumbersCanHandleASingleNumber(string stringValue, int expected)
