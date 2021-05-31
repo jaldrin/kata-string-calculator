@@ -11,7 +11,8 @@ namespace StringDemo
             //StringConversion();
             //StringAsArray();
             //EscapeString();
-            AppendingStrings();
+            //AppendingStrings();
+            InterpolationAndLiteral();
         }
 
         private static void StringConversion()
@@ -73,6 +74,14 @@ namespace StringDemo
             Console.WriteLine("{0}, my name is {0} {1}", firstName, lastName);
 
             results = $"{firstName}, my name is {firstName} {lastName}";
+            Console.WriteLine(results);
+        }
+
+        private static void InterpolationAndLiteral()
+        {
+            string testString = "John Aldrin";
+            string results = $@"{"\""}C:\Demos\{testString}\Test.txt{"\""}";
+
             Console.WriteLine(results);
         }
     }
