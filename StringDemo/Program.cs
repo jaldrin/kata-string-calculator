@@ -10,7 +10,8 @@ namespace StringDemo
             Console.WriteLine();
             //StringConversion();
             //StringAsArray();
-            EscapeString();
+            //EscapeString();
+            AppendingStrings();
         }
 
         private static void StringConversion()
@@ -54,6 +55,24 @@ namespace StringDemo
             Console.WriteLine(results);
 
             results = @"C:\Demos\Test.txt";
+            Console.WriteLine(results);
+        }
+
+        private static void AppendingStrings()
+        {
+            string firstName = "John";
+            string lastName = "Aldrin";
+            string results;
+
+            results = firstName + ", my name is " + firstName + " " + lastName;
+            Console.WriteLine(results);
+
+            results = string.Format("{0}, my name is {0} {1}", firstName, lastName);
+            Console.WriteLine(results);
+
+            Console.WriteLine("{0}, my name is {0} {1}", firstName, lastName);
+
+            results = $"{firstName}, my name is {firstName} {lastName}";
             Console.WriteLine(results);
         }
     }
