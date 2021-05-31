@@ -7,7 +7,9 @@ namespace StringDemo
     {
         static void Main(string[] args)
         {
-            StringConversion();
+            Console.WriteLine();
+            //StringConversion();
+            StringAsArray();
         }
 
         private static void StringConversion()
@@ -30,5 +32,14 @@ namespace StringDemo
             Console.WriteLine(result);
         }
 
+        private static void StringAsArray()
+        {
+            string testString = "John";
+
+            for (int i = 0; i < testString.Length; i++)
+            {
+                Console.WriteLine(testString[i]);
+            }
+        }
     }
 }
