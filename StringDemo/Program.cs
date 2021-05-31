@@ -9,7 +9,8 @@ namespace StringDemo
         {
             Console.WriteLine();
             //StringConversion();
-            StringAsArray();
+            //StringAsArray();
+            EscapeString();
         }
 
         private static void StringConversion()
@@ -40,6 +41,20 @@ namespace StringDemo
             {
                 Console.WriteLine(testString[i]);
             }
+        }
+
+        private static void EscapeString()
+        {
+            string results;
+
+            results = "This is my \"test\" solution";
+            Console.WriteLine(results);
+
+            results = "C:\\Demos\\Test.txt";
+            Console.WriteLine(results);
+
+            results = @"C:\Demos\Test.txt";
+            Console.WriteLine(results);
         }
     }
 }
