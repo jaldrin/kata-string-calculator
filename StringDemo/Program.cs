@@ -23,7 +23,8 @@ namespace StringDemo
             //TestingEquality();
             //GettingASubstring();
             //ReplacingText();
-            InsertingText();
+            //InsertingText();
+            RemovingText();
         }
 
         private static void StringConversion()
@@ -364,6 +365,18 @@ namespace StringDemo
             string results;
 
             results = testString.Insert(5, "(test) ");
+            Console.WriteLine(results);
+        }
+
+        private static void RemovingText()
+        {
+            string testString = "This is a test of remove. Let's see how its testing Works for test.";
+            string results;
+
+            results = testString.Remove(25);
+            Console.WriteLine(results);
+
+            results = testString.Remove(14, 10);
             Console.WriteLine(results);
         }
     }
