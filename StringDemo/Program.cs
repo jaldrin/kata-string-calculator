@@ -18,7 +18,8 @@ namespace StringDemo
             //StringBuilderDemo();
             //WorkingWithArrays();
             //PadAndTrim();
-            SearchingStrings();
+            //SearchingStrings();
+            OrderingStrings();
         }
 
         private static void StringConversion()
@@ -74,7 +75,7 @@ namespace StringDemo
             results = firstName + ", my name is " + firstName + " " + lastName;
             Console.WriteLine(results);
 
-            results = string.Format("{0}, my name is {0} {1}", firstName, lastName);
+            results = String.Format("{0}, my name is {0} {1}", firstName, lastName);
             Console.WriteLine(results);
 
             Console.WriteLine("{0}, my name is {0} {1}", firstName, lastName);
@@ -128,10 +129,10 @@ namespace StringDemo
             int[] ages = new int[] { 6, 7, 8, 3, 5 };
             string results;
 
-            results = string.Concat(ages);
+            results = String.Concat(ages);
             Console.WriteLine($"Concat: {results}");
 
-            results = string.Join(",", ages);
+            results = String.Join(",", ages);
             Console.WriteLine($"Join (CSV): {results}");
 
             Console.WriteLine();
@@ -182,7 +183,7 @@ namespace StringDemo
             resultsBoolean = testString.StartsWith("This Is");
             Console.WriteLine($"Starts with \"This Is\": {resultsBoolean}");
 
-            resultsBoolean = testString.StartsWith("This Is",StringComparison.CurrentCultureIgnoreCase);
+            resultsBoolean = testString.StartsWith("This Is", StringComparison.CurrentCultureIgnoreCase);
             Console.WriteLine($"Starts with \"This Is\" (CI): {resultsBoolean}");
 
             resultsBoolean = testString.EndsWith("works out.");
@@ -221,5 +222,59 @@ namespace StringDemo
             resultsInt = testString.LastIndexOf("test", 10);
             Console.WriteLine($"Last Index of \"test\" before charater 10: {resultsInt}");
         }
+
+        #region Ordering Strings
+        private static void OrderingStrings()
+        {
+            CompareToHelper("Mary", "Bob");
+            CompareToHelper("Mary", null);
+            CompareToHelper("Adam", "Bob");
+            CompareToHelper("Bob", "Bobby");
+            CompareToHelper("Bob", "Bob");
+            Console.WriteLine();
+
+            CompareHelper("Mary", "Bob");
+            CompareHelper("Mary", null);
+            CompareHelper(null, "Bob");
+            CompareHelper("Adam", "Bob");
+            CompareHelper("Bob", "Bobby");
+            CompareHelper("Bob", "Bob");
+            CompareHelper(null, null);
+        }
+
+        private static void CompareToHelper(string testA, string? testB)
+        {
+            int resultsInt = testA.CompareTo(testB);
+            switch (resultsInt)
+            {
+                case > 0:
+                    Console.WriteLine($"CompareTo: {testB ?? "null"} comes before {testA}");
+                    break;
+                case < 0:
+                    Console.WriteLine($"CompareTo: {testA} comes before {testB}");
+                    break;
+                case 0:
+                    Console.WriteLine($"CompareTo: {testA} is the same as {testB}");
+                    break;
+            }
+        }
+
+        private static void CompareHelper(string? testA, string? testB)
+        {
+            int resultsInt = String.Compare(testA, testB);
+            switch (resultsInt)
+            {
+                case > 0:
+                    Console.WriteLine($"Compare: {testB ?? "null"} comes before {testA}");
+                    break;
+                case < 0:
+                    Console.WriteLine($"Compare: {testA ?? "null"} comes before {testB}");
+                    break;
+                case 0:
+                    Console.WriteLine($"Compare: {testA ?? "null"} is the same as {testB ?? "null"}");
+                    break;
+            }
+        }
+        #endregion
     }
 }
