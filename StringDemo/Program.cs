@@ -9,22 +9,60 @@ namespace StringDemo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine();
-            //StringConversion();
-            //StringAsArray();
-            //EscapeString();
-            //AppendingStrings();
-            //InterpolationAndLiteral();
-            //StringBuilderDemo();
-            //WorkingWithArrays();
-            //PadAndTrim();
-            //SearchingStrings();
-            //OrderingStrings();
-            //TestingEquality();
-            //GettingASubstring();
-            //ReplacingText();
-            //InsertingText();
+            PrintHeader(nameof(StringConversion));
+            StringConversion();
+
+            PrintHeader(nameof(StringAsArray));
+            StringAsArray();
+
+            PrintHeader(nameof(EscapeString));
+            EscapeString();
+
+            PrintHeader(nameof(AppendingStrings));
+            AppendingStrings();
+
+            PrintHeader(nameof(InterpolationAndLiteral));
+            InterpolationAndLiteral();
+
+            PrintHeader(nameof(StringBuilderDemo));
+            StringBuilderDemo();
+
+            PrintHeader(nameof(WorkingWithArrays));
+            WorkingWithArrays();
+
+            PrintHeader(nameof(PadAndTrim));
+            PadAndTrim();
+
+            PrintHeader(nameof(SearchingStrings));
+            SearchingStrings();
+
+            PrintHeader(nameof(OrderingStrings));
+            OrderingStrings();
+
+            PrintHeader(nameof(TestingEquality));
+            TestingEquality();
+
+            PrintHeader(nameof(GettingASubstring));
+            GettingASubstring();
+
+            PrintHeader(nameof(ReplacingText));
+            ReplacingText();
+
+            PrintHeader(nameof(InsertingText));
+            InsertingText();
+
+            PrintHeader(nameof(RemovingText));
             RemovingText();
+        }
+
+        private static void PrintHeader(string methodName)
+        {
+            const int width = 50;
+            int nameLength = methodName.Length;
+            var leftPad = new String('*', (width - nameLength) / 2);
+            var rightPad = new String('*', width - nameLength - leftPad.Length);
+
+            Console.WriteLine($"{leftPad} {methodName} {rightPad}");
         }
 
         private static void StringConversion()
