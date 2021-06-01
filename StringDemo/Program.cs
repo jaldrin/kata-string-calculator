@@ -19,7 +19,8 @@ namespace StringDemo
             //WorkingWithArrays();
             //PadAndTrim();
             //SearchingStrings();
-            OrderingStrings();
+            //OrderingStrings();
+            TestingEquality();
         }
 
         private static void StringConversion()
@@ -183,7 +184,7 @@ namespace StringDemo
             resultsBoolean = testString.StartsWith("This Is");
             Console.WriteLine($"Starts with \"This Is\": {resultsBoolean}");
 
-            resultsBoolean = testString.StartsWith("This Is", StringComparison.CurrentCultureIgnoreCase);
+            resultsBoolean = testString.StartsWith("This Is", StringComparison.InvariantCultureIgnoreCase);
             Console.WriteLine($"Starts with \"This Is\" (CI): {resultsBoolean}");
 
             resultsBoolean = testString.EndsWith("works out.");
@@ -192,7 +193,7 @@ namespace StringDemo
             resultsBoolean = testString.EndsWith("Works out.");
             Console.WriteLine($"Ends with \"Works out.\": {resultsBoolean}");
 
-            resultsBoolean = testString.EndsWith("Works out.", StringComparison.CurrentCultureIgnoreCase);
+            resultsBoolean = testString.EndsWith("Works out.", StringComparison.InvariantCultureIgnoreCase);
             Console.WriteLine($"Ends with \"Works out.\" (CI): {resultsBoolean}");
 
             resultsBoolean = testString.Contains("test");
@@ -201,7 +202,7 @@ namespace StringDemo
             resultsBoolean = testString.Contains("tests");
             Console.WriteLine($"Contains \"tests\": {resultsBoolean}");
 
-            resultsBoolean = testString.Contains("let's", StringComparison.CurrentCultureIgnoreCase);
+            resultsBoolean = testString.Contains("let's", StringComparison.InvariantCultureIgnoreCase);
             Console.WriteLine($"Contains \"let's\" (CI): {resultsBoolean}");
 
             resultsInt = testString.IndexOf("test");
@@ -274,6 +275,56 @@ namespace StringDemo
                     Console.WriteLine($"Compare: {testA ?? "null"} is the same as {testB ?? "null"}");
                     break;
             }
+        }
+        #endregion
+
+        #region Testing Equality
+        private static void TestingEquality()
+        {
+            EqualityHelper("Bob", "Mary");
+            EqualityHelper(null, "");
+            EqualityHelper("", "  ");
+            EqualityHelper("Bob", "bob");
+            EqualityHelper("Bob", "Bob");
+            EqualityHelper(null, null);
+        }
+
+        private static void EqualityHelper(string? testA, string? testB)
+        {
+            bool resultBoolean = String.Equals(testA, testB);
+            switch (resultBoolean)
+            {
+                case true:
+                    Console.WriteLine($"Equals (CS): '{testA ?? "null"}' equals '{testB ?? "null"}'");
+                    break;
+                case false:
+                    Console.WriteLine($"Equals (CS): '{testA ?? "null"}' does not equal '{testB ?? "null"}'");
+                    break;
+            }
+
+            resultBoolean = String.Equals(testA, testB, StringComparison.InvariantCultureIgnoreCase);
+            switch (resultBoolean)
+            {
+                case true:
+                    Console.WriteLine($"Equals (CI): '{testA ?? "null"}' equals '{testB ?? "null"}'");
+                    break;
+                case false:
+                    Console.WriteLine($"Equals (CI): '{testA ?? "null"}' does not equal '{testB ?? "null"}'");
+                    break;
+            }
+
+            resultBoolean = (testA == testB);
+            switch (resultBoolean)
+            {
+                case true:
+                    Console.WriteLine($"Equals (==): '{testA ?? "null"}' equals '{testB ?? "null"}'");
+                    break;
+                case false:
+                    Console.WriteLine($"Equals (==): '{testA ?? "null"}' does not equal '{testB ?? "null"}'");
+                    break;
+            }
+
+            Console.WriteLine();
         }
         #endregion
     }
