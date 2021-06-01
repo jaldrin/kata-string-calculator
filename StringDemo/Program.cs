@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 
 namespace StringDemo
 {
@@ -12,7 +14,8 @@ namespace StringDemo
             //StringAsArray();
             //EscapeString();
             //AppendingStrings();
-            InterpolationAndLiteral();
+            //InterpolationAndLiteral();
+            StringBuilderDemo();
         }
 
         private static void StringConversion()
@@ -83,6 +86,38 @@ namespace StringDemo
             string results = $@"{"\""}C:\Demos\{testString}\Test.txt{"\""}";
 
             Console.WriteLine(results);
+        }
+
+        private static void StringBuilderDemo()
+        {
+            ////    String Concatination
+            Stopwatch regularStopwatch = new();
+            regularStopwatch.Start();
+
+            string test = "";
+            for (int i = 0; i < 100_000; i++)
+            {
+                test += i;
+            }
+
+            regularStopwatch.Stop();
+            Console.WriteLine($"Regular Stopwatch: {regularStopwatch.ElapsedMilliseconds}ms.");
+
+            ////    String Concatination
+            Stopwatch builderStopwatch = new();
+            builderStopwatch.Start();
+
+            StringBuilder sb = new();
+            for (int i = 0; i < 100_000; i++)
+            {
+                sb.Append(i);
+            }
+
+            builderStopwatch.Stop();
+            Console.WriteLine($"Builder Stopwatch: {builderStopwatch.ElapsedMilliseconds}ms.");
+
+            var test2 = sb.ToString();
+            Console.WriteLine($"String Compare: {test == test2}");
         }
     }
 }
