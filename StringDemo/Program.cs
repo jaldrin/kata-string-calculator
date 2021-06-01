@@ -17,7 +17,8 @@ namespace StringDemo
             //InterpolationAndLiteral();
             //StringBuilderDemo();
             //WorkingWithArrays();
-            PadAndTrim();
+            //PadAndTrim();
+            SearchingStrings();
         }
 
         private static void StringConversion()
@@ -167,6 +168,58 @@ namespace StringDemo
 
             results = testString.PadRight(10, '0');
             Console.WriteLine($"'{results}'");
+        }
+
+        private static void SearchingStrings()
+        {
+            string testString = "This is a test of the search. Let's see how its testing works out.";
+            bool resultsBoolean;
+            int resultsInt;
+
+            resultsBoolean = testString.StartsWith("This is");
+            Console.WriteLine($"Starts with \"This is\": {resultsBoolean}");
+
+            resultsBoolean = testString.StartsWith("This Is");
+            Console.WriteLine($"Starts with \"This Is\": {resultsBoolean}");
+
+            resultsBoolean = testString.StartsWith("This Is",StringComparison.CurrentCultureIgnoreCase);
+            Console.WriteLine($"Starts with \"This Is\" (CI): {resultsBoolean}");
+
+            resultsBoolean = testString.EndsWith("works out.");
+            Console.WriteLine($"Ends with \"works out.\": {resultsBoolean}");
+
+            resultsBoolean = testString.EndsWith("Works out.");
+            Console.WriteLine($"Ends with \"Works out.\": {resultsBoolean}");
+
+            resultsBoolean = testString.EndsWith("Works out.", StringComparison.CurrentCultureIgnoreCase);
+            Console.WriteLine($"Ends with \"Works out.\" (CI): {resultsBoolean}");
+
+            resultsBoolean = testString.Contains("test");
+            Console.WriteLine($"Contains \"test\": {resultsBoolean}");
+
+            resultsBoolean = testString.Contains("tests");
+            Console.WriteLine($"Contains \"tests\": {resultsBoolean}");
+
+            resultsBoolean = testString.Contains("let's", StringComparison.CurrentCultureIgnoreCase);
+            Console.WriteLine($"Contains \"let's\" (CI): {resultsBoolean}");
+
+            resultsInt = testString.IndexOf("test");
+            Console.WriteLine($"Index of \"test\": {resultsInt}");
+
+            resultsInt = testString.IndexOf("test", 11);
+            Console.WriteLine($"Index of \"test\" after character 10: {resultsInt}");
+
+            resultsInt = testString.IndexOf("test", 49);
+            Console.WriteLine($"Index of \"test\" after character 48: {resultsInt}");
+
+            resultsInt = testString.LastIndexOf("test");
+            Console.WriteLine($"Last Index of \"test\": {resultsInt}");
+
+            resultsInt = testString.LastIndexOf("test", 48);
+            Console.WriteLine($"Last Index of \"test\" before charater 48: {resultsInt}");
+
+            resultsInt = testString.LastIndexOf("test", 10);
+            Console.WriteLine($"Last Index of \"test\" before charater 10: {resultsInt}");
         }
     }
 }
