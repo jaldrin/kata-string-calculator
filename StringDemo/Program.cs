@@ -15,7 +15,8 @@ namespace StringDemo
             //EscapeString();
             //AppendingStrings();
             //InterpolationAndLiteral();
-            StringBuilderDemo();
+            //StringBuilderDemo();
+            WorkingWithArrays();
         }
 
         private static void StringConversion()
@@ -118,6 +119,31 @@ namespace StringDemo
 
             var test2 = sb.ToString();
             Console.WriteLine($"String Compare: {test == test2}");
+        }
+
+        private static void WorkingWithArrays()
+        {
+            int[] ages = new int[] { 6, 7, 8, 3, 5 };
+            string results;
+
+            results = string.Concat(ages);
+            Console.WriteLine($"Concat: {results}");
+
+            results = string.Join(",", ages);
+            Console.WriteLine($"Join (CSV): {results}");
+
+            Console.WriteLine();
+
+            string testString = "Jon,Tim,Mary,Sue,Bob,Jane";
+            string[] resultsArray = testString.Split(',');
+
+            Array.ForEach(resultsArray, x => Console.WriteLine(x));
+            Console.WriteLine();
+
+            testString = "Jon, Tim, Mary, Sue, Bob, Jane";
+            resultsArray = testString.Split(", ");
+
+            Array.ForEach(resultsArray, x => Console.WriteLine(x));
         }
     }
 }
