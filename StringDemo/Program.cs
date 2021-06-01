@@ -22,7 +22,8 @@ namespace StringDemo
             //OrderingStrings();
             //TestingEquality();
             //GettingASubstring();
-            ReplacingText();
+            //ReplacingText();
+            InsertingText();
         }
 
         private static void StringConversion()
@@ -354,6 +355,15 @@ namespace StringDemo
             Console.WriteLine(results);
 
             results = testString.Replace("works", "makes", StringComparison.InvariantCultureIgnoreCase);
+            Console.WriteLine(results);
+        }
+
+        private static void InsertingText()
+        {
+            string testString = "This is a test of insert. Let's see how its testing Works for test.";
+            string results;
+
+            results = testString.Insert(5, "(test) ");
             Console.WriteLine(results);
         }
     }
