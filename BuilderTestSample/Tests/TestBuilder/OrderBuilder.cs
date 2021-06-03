@@ -20,6 +20,12 @@ namespace BuilderTestSample.Tests.TestBuilder
             return _order;
         }
 
+        public OrderBuilder TotalAmount(decimal totalAmount)
+        {
+            _order.TotalAmount = totalAmount;
+            return this;
+        }
+
         public OrderBuilder WithTestValues()
         {
             _order.TotalAmount = 100m;

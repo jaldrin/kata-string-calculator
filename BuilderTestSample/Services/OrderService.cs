@@ -16,13 +16,14 @@ namespace BuilderTestSample.Services
         {
             // throw InvalidOrderException unless otherwise noted.
 
-            // TODO: order ID must be zero (it's a new order)
-            if (order.Id != 0) throw new InvalidOrderException("Order ID must be 0.");
+            if (order.Id != 0) 
+                throw new InvalidOrderException("Order ID must be 0.");
 
-            // TODO: order amount must be greater than zero
+            if (order.TotalAmount <= 0) 
+                throw new InvalidOrderException("Order amount must be greater than zero.");
             // TODO: order must have a customer (customer is not null)
 
-            ValidateCustomer(order.Customer);
+            // HACK:    ValidateCustomer(order.Customer);
         }
 
         private void ValidateCustomer(Customer customer)
