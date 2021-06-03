@@ -21,9 +21,10 @@ namespace BuilderTestSample.Services
 
             if (order.TotalAmount <= 0) 
                 throw new InvalidOrderException("Order amount must be greater than zero.");
-            // TODO: order must have a customer (customer is not null)
+            if (order.Customer is null)
+                throw new InvalidOrderException("Order must have a customer.");
 
-            // HACK:    ValidateCustomer(order.Customer);
+            ValidateCustomer(order.Customer);
         }
 
         private void ValidateCustomer(Customer customer)

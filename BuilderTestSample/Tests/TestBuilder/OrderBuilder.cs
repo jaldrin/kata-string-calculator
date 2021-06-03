@@ -7,29 +7,51 @@ namespace BuilderTestSample.Tests.TestBuilder
     /// </summary>
     public class OrderBuilder
     {
-        private Order _order = new();
+        private int _id;
+        private Customer _customer;
+        private decimal _totalAmount;
+        private bool _isExpected;
 
         public OrderBuilder Id(int id)
         {
-            _order.Id = id;
+            _id = id;
+            return this;
+        }
+
+        public OrderBuilder Customer(Customer customer)
+        {
+            _customer = customer;
+            return this;
+        }
+
+        public OrderBuilder TotalAmount(decimal totalAmount)
+        {
+            _totalAmount = totalAmount;
+            return this;
+        }
+
+        public OrderBuilder IsExpected(bool isExpected)
+        {
+            _isExpected = isExpected;
             return this;
         }
 
         public Order Build()
         {
-            return _order;
-        }
+            var _order = new Order
+            {
+                Id = _id,
+                Customer = _customer,
+                TotalAmount = _totalAmount,
+                IsExpected = _isExpected
+            };
 
-        public OrderBuilder TotalAmount(decimal totalAmount)
-        {
-            _order.TotalAmount = totalAmount;
-            return this;
+            return _order;
         }
 
         public OrderBuilder WithTestValues()
         {
-            _order.TotalAmount = 100m;
-
+            _totalAmount = 100m;
             // TODO: replace next lines with a CustomerBuilder you create
             // _order.Customer = new Customer();
             // _order.Customer.HomeAddress = new Address();

@@ -1,6 +1,8 @@
 ﻿using BuilderTestSample.Exceptions;
+using BuilderTestSample.Model;
 using BuilderTestSample.Services;
 using BuilderTestSample.Tests.TestBuilder;
+using System;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,6 +18,13 @@ namespace BuilderTestSample.Tests
             => _logger = logger;
         #endregion
 
+        public enum TestCase
+        {
+            UseNull,
+            UseObjectValidId,
+            UseObjectInvalidId
+        }
+
         [Theory]
         [InlineData(-1, false, "Negative ID")]
         [InlineData(0, true, "Valid ID")]
@@ -24,6 +33,7 @@ namespace BuilderTestSample.Tests
         {
             var order = _orderBuilder.WithTestValues()
                                      .Id(id)
+                                     .Customer(BuildTestCustomer(TestCase.UseObjectValidId))
                                      .Build();
             RunOrderTest(passFail, description, order);
         }
@@ -37,8 +47,40 @@ namespace BuilderTestSample.Tests
             var order = _orderBuilder.WithTestValues()
                                      .Id(0)
                                      .TotalAmount(amount)
+                                     .Customer(BuildTestCustomer(TestCase.UseObjectValidId))
                                      .Build();
             RunOrderTest(passFail, description, order);
+        }
+
+        [Theory]
+        [InlineData(TestCase.UseNull, false, "Customer is null")]
+        [InlineData(TestCase.UseObjectValidId, true, "Customer is not null")]
+        public void OrderMustHaveACustomer(TestCase testCase, bool passFail, string description)
+        {
+            var order = _orderBuilder.WithTestValues()
+                                     .Id(0)
+                                     .Customer(BuildTestCustomer(testCase))
+                                     .Build();
+            RunOrderTest(passFail, description, order);
+        }
+
+        private static Customer BuildTestCustomer(TestCase testCase)
+        {
+            Customer _customer;
+            switch (testCase)
+            {
+                case TestCase.UseObjectValidId:
+                    _customer = new(1);
+                    break;
+                case TestCase.UseObjectInvalidId:
+                    _customer = new(0);
+                    break;
+                default:
+                    _customer = null;
+                    break;
+            }
+
+            return _customer;
         }
 
         private void RunOrderTest(bool passFail, string description, Model.Order order)
