@@ -5,7 +5,7 @@ namespace BuilderTestSample.Services
 {
     public class OrderService
     {
-        public void PlaceOrder(Order order)
+        public static void PlaceOrder(Order order)
         {
             ValidateOrder(order);
             ExpediteOrder(order);
@@ -64,11 +64,11 @@ namespace BuilderTestSample.Services
                                 && order.Customer.CreditRating > 500);
         }
 
-        private void AddOrderToCustomerHistory(Order order)
+        private static void AddOrderToCustomerHistory(Order order)
         {
             order.Customer.OrderHistory.Add(order);
 
-            // TODO: update the customer's total purchases property
+            order.Customer.TotalPurchases += order.TotalAmount;
         }
     }
 }

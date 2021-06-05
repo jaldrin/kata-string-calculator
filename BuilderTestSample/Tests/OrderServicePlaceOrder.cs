@@ -11,7 +11,6 @@ namespace BuilderTestSample.Tests
     public class OrderServicePlaceOrder
     {
         #region Constructor
-        private readonly OrderService _orderService = new();
         private readonly OrderBuilder _orderBuilder = new();
         private readonly ITestOutputHelper _logger;
         public OrderServicePlaceOrder(ITestOutputHelper logger)
@@ -276,7 +275,7 @@ namespace BuilderTestSample.Tests
                                           .Customer(customer)
                                           .Build();
 
-            _orderService.PlaceOrder(order);
+            OrderService.PlaceOrder(order);
             Assert.Equal(passFail, order.IsExpected);
             _logger.WriteLine($"Pass/Fail: {passFail} - {description}");
         }
@@ -288,10 +287,20 @@ namespace BuilderTestSample.Tests
         {
             var order = new OrderBuilder().WithTestValues().Build();
 
-            _orderService.PlaceOrder(order);
+            OrderService.PlaceOrder(order);
 
             Assert.NotEmpty(order.Customer.OrderHistory);
             Assert.Single(order.Customer.OrderHistory);
+        }
+
+        [Fact]
+        public void UpdateCustomerTotalPurchases()
+        {
+            var order = new OrderBuilder().WithTestValues().TotalAmount(100m).Build();
+
+            OrderService.PlaceOrder(order);
+
+            Assert.Equal(200m, order.Customer.TotalPurchases);
         }
         #endregion
 
@@ -310,7 +319,7 @@ namespace BuilderTestSample.Tests
 
             try
             {
-                _orderService.PlaceOrder(order);
+                OrderService.PlaceOrder(order);
                 Assert.True(passFail);
                 message = $"Pass/Fail: {passFail} - {description}";
             }
