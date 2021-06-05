@@ -37,7 +37,8 @@ namespace BuilderTestSample.Services
             // TODO: customer must have an address (it is not null)
             if (string.IsNullOrWhiteSpace(customer.FirstName) || string.IsNullOrWhiteSpace(customer.LastName))
                 throw new InvalidCustomerException("Customer must have a first and last name.");
-            // TODO: customer must have credit rating > 200 (otherwise throw InsufficientCreditException)
+            if (customer.CreditRating <= 200)
+                throw new InsufficientCreditException("Customer must have credit rating > 200");
             // TODO: customer must have total purchases >= 0
 
             ValidateAddress(customer.HomeAddress);

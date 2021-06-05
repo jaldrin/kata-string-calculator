@@ -107,6 +107,22 @@ namespace BuilderTestSample.Tests
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
         }
+
+        [Theory]
+        [InlineData(0, false, "Credit too low")]
+        [InlineData(200, false, "Credit edge case")]
+        [InlineData(201, true, "Credit is valid")]
+        public void CustomerMustHaveCreditRatingOver200(int creditRating, bool passFail, string description)
+        {
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .CreditRating(creditRating)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            RunOrderTest(passFail, description, order, typeof(InsufficientCreditException));
+        }
         #endregion
 
         #region Private Test Methods
