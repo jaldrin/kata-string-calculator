@@ -123,6 +123,22 @@ namespace BuilderTestSample.Tests
 
             RunOrderTest(passFail, description, order, typeof(InsufficientCreditException));
         }
+
+        [Theory]
+        [InlineData(-1, false, "Negative Purchases")]
+        [InlineData(0, true, "Edge Case Purchases")]
+        [InlineData(+1, true, "Positive Purchases")]
+        public void CustomerMustHavePositiveTotalPurchases(decimal totalPurchases, bool passFail, string description)
+        {
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .TotalPurchases(totalPurchases)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
+        }
         #endregion
 
         #region Private Test Methods
