@@ -7,7 +7,7 @@ namespace BuilderTestSample.Tests.TestBuilder
     /// </summary>
     public class CustomerBuilder
     {
-        private int _id;
+        private readonly int _id;
         private string _firstName;
         private string _lastName;
         private Address _homeAddress;

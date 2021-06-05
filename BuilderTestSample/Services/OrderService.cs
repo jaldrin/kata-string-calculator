@@ -12,7 +12,7 @@ namespace BuilderTestSample.Services
             AddOrderToCustomerHistory(order);
         }
 
-        private void ValidateOrder(Order order)
+        private static void ValidateOrder(Order order)
         {
             // throw InvalidOrderException unless otherwise noted.
 
@@ -27,7 +27,7 @@ namespace BuilderTestSample.Services
             ValidateCustomer(order.Customer);
         }
 
-        private void ValidateCustomer(Customer customer)
+        private static void ValidateCustomer(Customer customer)
         {
             if (customer.Id <= 0) 
                 throw new InvalidCustomerException("Customer must have an ID.");
@@ -43,7 +43,7 @@ namespace BuilderTestSample.Services
             ValidateAddress(customer.HomeAddress);
         }
 
-        private void ValidateAddress(Address homeAddress)
+        private static void ValidateAddress(Address homeAddress)
         {
             if (string.IsNullOrWhiteSpace(homeAddress.Street1))
                 throw new InvalidAddressException("Street1 is required.");
@@ -57,9 +57,11 @@ namespace BuilderTestSample.Services
                 throw new InvalidAddressException("Country is required.");
         }
 
-        private void ExpediteOrder(Order order)
+        private static void ExpediteOrder(Order order)
         {
-            // TODO: if customer's total purchases > 5000 and credit rating > 500 set IsExpedited to true
+            order.IsExpected = (order.Customer is not null
+                                && order.Customer.TotalPurchases > 5000
+                                && order.Customer.CreditRating > 500);
         }
 
         private void AddOrderToCustomerHistory(Order order)

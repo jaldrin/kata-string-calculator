@@ -94,7 +94,7 @@ namespace BuilderTestSample.Tests
         [InlineData(" ", "Last", false, "First name is blank")]
         [InlineData("First", " ", false, "Last name is blank")]
         [InlineData("First", "Last", true, "First & Last name have values")]
-        public void CustomerMustHaveFirstAndLastNames(string firstName, string lastName, 
+        public void CustomerMustHaveFirstAndLastNames(string firstName, string lastName,
                                                       bool passFail, string description)
         {
             var customer = new CustomerBuilder(1).WithTestValues()
@@ -139,9 +139,9 @@ namespace BuilderTestSample.Tests
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
         }
-        
+
         [Theory]
-        [InlineData(false,"Does not have an address")]
+        [InlineData(false, "Does not have an address")]
         [InlineData(true, "Has an address")]
         public void CustomerMustHaveAnAddress(bool hasAddress, string description)
         {
@@ -262,25 +262,34 @@ namespace BuilderTestSample.Tests
         }
         #endregion
 
+        #region Expedite Order
+        [Theory]
+        [InlineData(5000, 500, false, "Edge cases")]
+        [InlineData(5001, 501, true, "Positive test case")]
+        public void ValidateExpediteOrderRules(decimal totalPurchases, int creditRating, bool passFail, string description)
+        {
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .TotalPurchases(totalPurchases)
+                                                 .CreditRating(creditRating)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            _orderService.PlaceOrder(order);
+            Assert.Equal(passFail, order.IsExpected);
+            _logger.WriteLine($"Pass/Fail: {passFail} - {description}");
+        }
+        #endregion
+
         #region Private Test Methods
         private static Customer BuildTestCustomer(TestCase testCase)
-        {
-            Customer _customer;
-            switch (testCase)
+            => testCase switch
             {
-                case TestCase.UseObjectValidId:
-                    _customer = new CustomerBuilder(1).WithTestValues().Build();
-                    break;
-                case TestCase.UseObjectInvalidId:
-                    _customer = new CustomerBuilder(0).WithTestValues().Build();
-                    break;
-                default:
-                    _customer = null;
-                    break;
-            }
-
-            return _customer;
-        }
+                TestCase.UseObjectValidId => new CustomerBuilder(1).WithTestValues().Build(),
+                TestCase.UseObjectInvalidId => new CustomerBuilder(0).WithTestValues().Build(),
+                _ => null,
+            };
 
         private void RunOrderTest(bool passFail, string description, Model.Order order, Type exceptionType)
         {
