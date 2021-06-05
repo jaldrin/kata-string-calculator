@@ -282,6 +282,19 @@ namespace BuilderTestSample.Tests
         }
         #endregion
 
+        #region Add Order to History
+        [Fact]
+        public void AddTheOrderToTheCustomer()
+        {
+            var order = new OrderBuilder().WithTestValues().Build();
+
+            _orderService.PlaceOrder(order);
+
+            Assert.NotEmpty(order.Customer.OrderHistory);
+            Assert.Single(order.Customer.OrderHistory);
+        }
+        #endregion
+
         #region Private Test Methods
         private static Customer BuildTestCustomer(TestCase testCase)
             => testCase switch

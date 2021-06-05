@@ -52,8 +52,11 @@ namespace BuilderTestSample.Tests.TestBuilder
         public OrderBuilder WithTestValues()
         {
             _totalAmount = 100m;
-            var address = new AddressBuilder().WithDefaultValues().Build();
-            _customer = new CustomerBuilder(1).WithTestValues().HomeAddress(address).Build();
+            var address = new AddressBuilder().WithDefaultValues()
+                                              .Build();
+            _customer = new CustomerBuilder(1).WithTestValues()
+                                              .HomeAddress(address)
+                                              .Build();
 
             return this;
         }
