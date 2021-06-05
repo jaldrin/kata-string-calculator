@@ -82,6 +82,31 @@ namespace BuilderTestSample.Tests
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
         }
+
+        [Theory]
+        [InlineData(null, null, false, "Both names are null")]
+        [InlineData(null, "Last", false, "First name is null")]
+        [InlineData("First", null, false, "Last name is null")]
+        [InlineData("", "", false, "Both names are empty")]
+        [InlineData("", "Last", false, "First name is empty")]
+        [InlineData("First", "", false, "Last name is empty")]
+        [InlineData(" ", " ", false, "Both names are blank")]
+        [InlineData(" ", "Last", false, "First name is blank")]
+        [InlineData("First", " ", false, "Last name is blank")]
+        [InlineData("First", "Last", true, "First & Last name have values")]
+        public void CustomerMustHaveFirstAndLastNames(string firstName, string lastName, 
+                                                      bool passFail, string description)
+        {
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .FirstName(firstName)
+                                                 .LastName(lastName)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
+        }
         #endregion
 
         #region Private Test Methods
@@ -106,7 +131,8 @@ namespace BuilderTestSample.Tests
 
         private void RunOrderTest(bool passFail, string description, Model.Order order, Type exceptionType)
         {
-            string message = $"Pass/Fail: {passFail} - {description}";
+            var message = $"Pass/Fail: {passFail} - {description}";
+            bool status = true;
 
             try
             {
@@ -115,7 +141,12 @@ namespace BuilderTestSample.Tests
             catch (Exception ex)
             {
                 Assert.Equal(exceptionType.Name, ex.GetType().Name);
+                status = false;
                 message = $"Pass/Fail: {passFail} - {ex.GetType().Name} - {description}";
+            }
+            finally
+            {
+                Assert.Equal(passFail, status);
             }
 
             _logger.WriteLine(message);

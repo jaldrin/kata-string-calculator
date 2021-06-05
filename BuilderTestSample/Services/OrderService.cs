@@ -32,9 +32,11 @@ namespace BuilderTestSample.Services
             // throw InvalidCustomerException unless otherwise noted
             // create a CustomerBuilder to implement the tests for these scenarios
 
-            if (customer.Id <= 0) throw new InvalidCustomerException("Customer must have an ID.");
+            if (customer.Id <= 0) 
+                throw new InvalidCustomerException("Customer must have an ID.");
             // TODO: customer must have an address (it is not null)
-            // TODO: customer must have a first and last name
+            if (string.IsNullOrWhiteSpace(customer.FirstName) || string.IsNullOrWhiteSpace(customer.LastName))
+                throw new InvalidCustomerException("Customer must have a first and last name.");
             // TODO: customer must have credit rating > 200 (otherwise throw InsufficientCreditException)
             // TODO: customer must have total purchases >= 0
 
