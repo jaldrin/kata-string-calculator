@@ -14,11 +14,8 @@ namespace BuilderTestSample.Tests.TestBuilder
         private int _creditRating;
         private decimal _totalPurchases;
 
-        public CustomerBuilder Id(int id)
-        {
-            _id = id;
-            return this;
-        }
+        public CustomerBuilder(int id) 
+            => _id = id;
 
         public CustomerBuilder FirstName(string firstName)
         {
@@ -62,9 +59,8 @@ namespace BuilderTestSample.Tests.TestBuilder
             };
         }
 
-        public CustomerBuilder WithTestValues(int id)
+        public CustomerBuilder WithTestValues()
         {
-            _id = id;
             _firstName = nameof(Customer.FirstName);
             _lastName = nameof(Customer.LastName);
             _homeAddress = null;

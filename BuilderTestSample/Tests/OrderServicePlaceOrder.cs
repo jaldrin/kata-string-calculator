@@ -14,7 +14,7 @@ namespace BuilderTestSample.Tests
         private readonly OrderService _orderService = new();
         private readonly OrderBuilder _orderBuilder = new();
         private readonly ITestOutputHelper _logger;
-        public OrderServicePlaceOrder(ITestOutputHelper logger) 
+        public OrderServicePlaceOrder(ITestOutputHelper logger)
             => _logger = logger;
         #endregion
 
@@ -25,6 +25,7 @@ namespace BuilderTestSample.Tests
             UseObjectInvalidId
         }
 
+        #region Validate Order
         [Theory]
         [InlineData(-1, false, "Negative ID")]
         [InlineData(0, true, "Valid ID")]
@@ -35,7 +36,7 @@ namespace BuilderTestSample.Tests
                                      .Id(id)
                                      .Customer(BuildTestCustomer(TestCase.UseObjectValidId))
                                      .Build();
-            RunOrderTest(passFail, description, order);
+            RunOrderTest(passFail, description, order, typeof(InvalidOrderException));
         }
 
         [Theory]
@@ -49,7 +50,7 @@ namespace BuilderTestSample.Tests
                                      .TotalAmount(amount)
                                      .Customer(BuildTestCustomer(TestCase.UseObjectValidId))
                                      .Build();
-            RunOrderTest(passFail, description, order);
+            RunOrderTest(passFail, description, order, typeof(InvalidOrderException));
         }
 
         [Theory]
@@ -61,19 +62,39 @@ namespace BuilderTestSample.Tests
                                      .Id(0)
                                      .Customer(BuildTestCustomer(testCase))
                                      .Build();
-            RunOrderTest(passFail, description, order);
+            RunOrderTest(passFail, description, order, typeof(InvalidOrderException));
         }
+        #endregion
 
+        #region Validate Customer
+        [Theory]
+        [InlineData(-1, false, "Negative ID")]
+        [InlineData(0, false, "Edge Case")]
+        [InlineData(1, true, "Positive ID")]
+        public void CustomerMustHaveAnID(int id, bool passFail, string description)
+        {
+            var customer = new CustomerBuilder(id).WithTestValues()
+                                                  .Build();
+            var order = new OrderBuilder().Id(0)
+                                          .Customer(customer)
+                                          .TotalAmount(100m)
+                                          .Build();
+
+            RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
+        }
+        #endregion
+
+        #region Private Test Methods
         private static Customer BuildTestCustomer(TestCase testCase)
         {
             Customer _customer;
             switch (testCase)
             {
                 case TestCase.UseObjectValidId:
-                    _customer = new(1);
+                    _customer = new CustomerBuilder(1).WithTestValues().Build();
                     break;
                 case TestCase.UseObjectInvalidId:
-                    _customer = new(0);
+                    _customer = new CustomerBuilder(0).WithTestValues().Build();
                     break;
                 default:
                     _customer = null;
@@ -83,14 +104,22 @@ namespace BuilderTestSample.Tests
             return _customer;
         }
 
-        private void RunOrderTest(bool passFail, string description, Model.Order order)
+        private void RunOrderTest(bool passFail, string description, Model.Order order, Type exceptionType)
         {
-            if (passFail)
-                _orderService.PlaceOrder(order);
-            else
-                Assert.Throws<InvalidOrderException>(() => _orderService.PlaceOrder(order));
+            string message = $"Pass/Fail: {passFail} - {description}";
 
-            _logger.WriteLine($"Pass/Fail: {passFail} - {description}");
+            try
+            {
+                _orderService.PlaceOrder(order);
+            }
+            catch (Exception ex)
+            {
+                Assert.Equal(exceptionType.Name, ex.GetType().Name);
+                message = $"Pass/Fail: {passFail} - {ex.GetType().Name} - {description}";
+            }
+
+            _logger.WriteLine(message);
         }
+        #endregion
     }
 }

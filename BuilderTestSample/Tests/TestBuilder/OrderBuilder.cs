@@ -8,7 +8,7 @@ namespace BuilderTestSample.Tests.TestBuilder
     public class OrderBuilder
     {
         private int _id;
-        private Customer _customer;
+        private Customer _customer = null;
         private decimal _totalAmount;
         private bool _isExpected;
 
