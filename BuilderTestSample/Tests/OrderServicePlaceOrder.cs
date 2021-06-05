@@ -5,6 +5,7 @@ using BuilderTestSample.Tests.TestBuilder;
 using System;
 using Xunit;
 using Xunit.Abstractions;
+using Shouldly;
 
 namespace BuilderTestSample.Tests
 {
@@ -276,7 +277,7 @@ namespace BuilderTestSample.Tests
                                           .Build();
 
             OrderService.PlaceOrder(order);
-            Assert.Equal(passFail, order.IsExpected);
+            order.IsExpected.ShouldBe(passFail);
             _logger.WriteLine($"Pass/Fail: {passFail} - {description}");
         }
         #endregion
@@ -289,8 +290,8 @@ namespace BuilderTestSample.Tests
 
             OrderService.PlaceOrder(order);
 
-            Assert.NotEmpty(order.Customer.OrderHistory);
-            Assert.Single(order.Customer.OrderHistory);
+            order.Customer.OrderHistory.ShouldNotBeEmpty();
+            order.Customer.OrderHistory.ShouldHaveSingleItem();
         }
 
         [Fact]
@@ -300,7 +301,7 @@ namespace BuilderTestSample.Tests
 
             OrderService.PlaceOrder(order);
 
-            Assert.Equal(200m, order.Customer.TotalPurchases);
+            order.Customer.TotalPurchases.ShouldBe(200m);
         }
         #endregion
 
@@ -320,13 +321,13 @@ namespace BuilderTestSample.Tests
             try
             {
                 OrderService.PlaceOrder(order);
-                Assert.True(passFail);
+                passFail.ShouldBeTrue();
                 message = $"Pass/Fail: {passFail} - {description}";
             }
             catch (Exception ex)
             {
-                Assert.Equal(exceptionType.Name, ex.GetType().Name);
-                Assert.False(passFail);
+                ex.GetType().Name.ShouldBe(exceptionType.Name);
+                passFail.ShouldBeFalse();
                 message = $"Pass/Fail: {passFail} - {ex.GetType().Name} - {description}";
             }
 
