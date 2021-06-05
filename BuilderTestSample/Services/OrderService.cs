@@ -51,12 +51,14 @@ namespace BuilderTestSample.Services
             // throw InvalidAddressException unless otherwise noted
             // create an AddressBuilder to implement the tests for these scenarios
 
-            // TODO: street1 is required (not null or empty)
             if (string.IsNullOrWhiteSpace(homeAddress.Street1))
                 throw new InvalidAddressException("Street1 is required.");
-            // TODO: city is required (not null or empty)
-            // TODO: state is required (not null or empty)
-            // TODO: postalcode is required (not null or empty)
+            if (string.IsNullOrWhiteSpace(homeAddress.City))
+                throw new InvalidAddressException("City is required.");
+            if (string.IsNullOrWhiteSpace(homeAddress.State))
+                throw new InvalidAddressException("State is required.");
+            if (string.IsNullOrWhiteSpace(homeAddress.PostalCode))
+                throw new InvalidAddressException("Postal Code is required.");
             // TODO: country is required (not null or empty)
         }
 
