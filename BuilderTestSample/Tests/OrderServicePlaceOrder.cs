@@ -160,6 +160,28 @@ namespace BuilderTestSample.Tests
         }
         #endregion
 
+        #region Validate Address
+        [Theory]
+        [InlineData(null, false, "Street1 is null")]
+        [InlineData("", false, "Street1 is empty")]
+        [InlineData(" ", false, "Street1 is blank")]
+        [InlineData("Has value", true, "Street1 has value")]
+        public void AddressStreet1IsRequired(string street1, bool passFail, string description)
+        {
+            var address = new AddressBuilder().WithDefaultValues()
+                                              .Street1(street1)
+                                              .Build();
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .HomeAddress(address)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+        }
+        #endregion
+
         #region Private Test Methods
         private static Customer BuildTestCustomer(TestCase testCase)
         {
