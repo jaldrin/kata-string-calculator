@@ -139,6 +139,25 @@ namespace BuilderTestSample.Tests
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
         }
+        
+        [Theory]
+        [InlineData(false,"Does not have an address")]
+        [InlineData(true, "Has an address")]
+        public void CustomerMustHaveAnAddress(bool hasAddress, string description)
+        {
+            Address address = null;
+            if (hasAddress)
+                address = new AddressBuilder().WithDefaultValues().Build();
+
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .HomeAddress(address)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            RunOrderTest(hasAddress, description, order, typeof(InvalidCustomerException));
+        }
         #endregion
 
         #region Private Test Methods
@@ -163,22 +182,19 @@ namespace BuilderTestSample.Tests
 
         private void RunOrderTest(bool passFail, string description, Model.Order order, Type exceptionType)
         {
-            var message = $"Pass/Fail: {passFail} - {description}";
-            bool status = true;
+            string message;
 
             try
             {
                 _orderService.PlaceOrder(order);
+                Assert.True(passFail);
+                message = $"Pass/Fail: {passFail} - {description}";
             }
             catch (Exception ex)
             {
                 Assert.Equal(exceptionType.Name, ex.GetType().Name);
-                status = false;
+                Assert.False(passFail);
                 message = $"Pass/Fail: {passFail} - {ex.GetType().Name} - {description}";
-            }
-            finally
-            {
-                Assert.Equal(passFail, status);
             }
 
             _logger.WriteLine(message);

@@ -63,7 +63,7 @@ namespace BuilderTestSample.Tests.TestBuilder
         {
             _firstName = nameof(Customer.FirstName);
             _lastName = nameof(Customer.LastName);
-            _homeAddress = null;
+            _homeAddress = new AddressBuilder().WithDefaultValues().Build();
             _creditRating = 600;
             _totalPurchases = 100m;
 
