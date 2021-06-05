@@ -29,9 +29,6 @@ namespace BuilderTestSample.Services
 
         private void ValidateCustomer(Customer customer)
         {
-            // throw InvalidCustomerException unless otherwise noted
-            // create a CustomerBuilder to implement the tests for these scenarios
-
             if (customer.Id <= 0) 
                 throw new InvalidCustomerException("Customer must have an ID.");
             if (customer.HomeAddress is null)
@@ -48,9 +45,6 @@ namespace BuilderTestSample.Services
 
         private void ValidateAddress(Address homeAddress)
         {
-            // throw InvalidAddressException unless otherwise noted
-            // create an AddressBuilder to implement the tests for these scenarios
-
             if (string.IsNullOrWhiteSpace(homeAddress.Street1))
                 throw new InvalidAddressException("Street1 is required.");
             if (string.IsNullOrWhiteSpace(homeAddress.City))
@@ -59,7 +53,8 @@ namespace BuilderTestSample.Services
                 throw new InvalidAddressException("State is required.");
             if (string.IsNullOrWhiteSpace(homeAddress.PostalCode))
                 throw new InvalidAddressException("Postal Code is required.");
-            // TODO: country is required (not null or empty)
+            if (string.IsNullOrWhiteSpace(homeAddress.Country))
+                throw new InvalidAddressException("Country is required.");
         }
 
         private void ExpediteOrder(Order order)
@@ -71,7 +66,7 @@ namespace BuilderTestSample.Services
         {
             // TODO: add the order to the customer
 
-            // TODO: update the customer's total purchases property        }
+            // TODO: update the customer's total purchases property
         }
     }
 }

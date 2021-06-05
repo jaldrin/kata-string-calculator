@@ -240,6 +240,26 @@ namespace BuilderTestSample.Tests
 
             RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
         }
+
+        [Theory]
+        [InlineData(null, false, "Postal Code is null")]
+        [InlineData("", false, "Postal Code is empty")]
+        [InlineData(" ", false, "Postal Code is blank")]
+        [InlineData("Has value", true, "Postal Code has value")]
+        public void AddressCountryCodeIsRequired(string country, bool passFail, string description)
+        {
+            var address = new AddressBuilder().WithDefaultValues()
+                                              .Country(country)
+                                              .Build();
+            var customer = new CustomerBuilder(1).WithTestValues()
+                                                 .HomeAddress(address)
+                                                 .Build();
+            var order = new OrderBuilder().WithTestValues()
+                                          .Customer(customer)
+                                          .Build();
+
+            RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+        }
         #endregion
 
         #region Private Test Methods
