@@ -49,12 +49,12 @@ namespace BuilderTestSample.Tests.TestBuilder
             return _order;
         }
 
-        public OrderBuilder WithTestValues()
+        public OrderBuilder WithDefaultValues()
         {
-            _totalAmount = 100m;
+            _totalAmount = 1m;
             var address = new AddressBuilder().WithDefaultValues()
                                               .Build();
-            _customer = new CustomerBuilder(1).WithTestValues()
+            _customer = new CustomerBuilder(1).WithDefaultValues()
                                               .HomeAddress(address)
                                               .Build();
 

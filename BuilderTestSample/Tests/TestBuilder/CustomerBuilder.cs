@@ -59,13 +59,13 @@ namespace BuilderTestSample.Tests.TestBuilder
             };
         }
 
-        public CustomerBuilder WithTestValues()
+        public CustomerBuilder WithDefaultValues()
         {
             _firstName = nameof(Customer.FirstName);
             _lastName = nameof(Customer.LastName);
             _homeAddress = new AddressBuilder().WithDefaultValues().Build();
             _creditRating = 600;
-            _totalPurchases = 100m;
+            _totalPurchases = 0m;
 
             return this;
         }

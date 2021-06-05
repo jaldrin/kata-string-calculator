@@ -14,11 +14,8 @@ namespace BuilderTestSample.Services
 
         private static void ValidateOrder(Order order)
         {
-            // throw InvalidOrderException unless otherwise noted.
-
             if (order.Id != 0) 
                 throw new InvalidOrderException("Order ID must be 0.");
-
             if (order.TotalAmount <= 0) 
                 throw new InvalidOrderException("Order amount must be greater than zero.");
             if (order.Customer is null)
@@ -59,9 +56,8 @@ namespace BuilderTestSample.Services
 
         private static void ExpediteOrder(Order order)
         {
-            order.IsExpected = (order.Customer is not null
-                                && order.Customer.TotalPurchases > 5000
-                                && order.Customer.CreditRating > 500);
+            order.IsExpected = order.Customer.TotalPurchases > 5000
+                               && order.Customer.CreditRating > 500;
         }
 
         private static void AddOrderToCustomerHistory(Order order)

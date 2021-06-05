@@ -2,10 +2,10 @@
 using BuilderTestSample.Model;
 using BuilderTestSample.Services;
 using BuilderTestSample.Tests.TestBuilder;
+using Shouldly;
 using System;
 using Xunit;
 using Xunit.Abstractions;
-using Shouldly;
 
 namespace BuilderTestSample.Tests
 {
@@ -18,13 +18,6 @@ namespace BuilderTestSample.Tests
             => _logger = logger;
         #endregion
 
-        public enum TestCase
-        {
-            UseNull,
-            UseObjectValidId,
-            UseObjectInvalidId
-        }
-
         #region Validate Order
         [Theory]
         [InlineData(-1, false, "Negative ID")]
@@ -32,9 +25,8 @@ namespace BuilderTestSample.Tests
         [InlineData(1, false, "Positive ID")]
         public void OrderIdMustBeZero(int id, bool passFail, string description)
         {
-            var order = _orderBuilder.WithTestValues()
+            var order = _orderBuilder.WithDefaultValues()
                                      .Id(id)
-                                     .Customer(BuildTestCustomer(TestCase.UseObjectValidId))
                                      .Build();
             RunOrderTest(passFail, description, order, typeof(InvalidOrderException));
         }
@@ -45,23 +37,23 @@ namespace BuilderTestSample.Tests
         [InlineData(1, true, "Positive Amount")]
         public void OrderAmountMustBeGreaterThanZero(decimal amount, bool passFail, string description)
         {
-            var order = _orderBuilder.WithTestValues()
+            var order = _orderBuilder.WithDefaultValues()
                                      .Id(0)
                                      .TotalAmount(amount)
-                                     .Customer(BuildTestCustomer(TestCase.UseObjectValidId))
                                      .Build();
             RunOrderTest(passFail, description, order, typeof(InvalidOrderException));
         }
 
         [Theory]
-        [InlineData(TestCase.UseNull, false, "Customer is null")]
-        [InlineData(TestCase.UseObjectValidId, true, "Customer is not null")]
-        public void OrderMustHaveACustomer(TestCase testCase, bool passFail, string description)
+        [InlineData(false, "Customer is valid")]
+        [InlineData(true, "Customer is invalid")]
+        public void OrderMustHaveACustomer(bool passFail, string description)
         {
-            var order = _orderBuilder.WithTestValues()
-                                     .Id(0)
-                                     .Customer(BuildTestCustomer(testCase))
+            var customer = (passFail ? new CustomerBuilder(1).WithDefaultValues().Build() : null);
+            var order = _orderBuilder.WithDefaultValues()
+                                     .Customer(customer)
                                      .Build();
+
             RunOrderTest(passFail, description, order, typeof(InvalidOrderException));
         }
         #endregion
@@ -73,14 +65,15 @@ namespace BuilderTestSample.Tests
         [InlineData(1, true, "Positive ID")]
         public void CustomerMustHaveAnID(int id, bool passFail, string description)
         {
-            var customer = new CustomerBuilder(id).WithTestValues()
-                                                  .Build();
+            var customer = new CustomerBuilder(id).WithDefaultValues().Build();
+
             var order = new OrderBuilder().Id(0)
                                           .Customer(customer)
                                           .TotalAmount(100m)
                                           .Build();
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
+            order.Customer.Id.ShouldBe(id);
         }
 
         [Theory]
@@ -97,15 +90,17 @@ namespace BuilderTestSample.Tests
         public void CustomerMustHaveFirstAndLastNames(string firstName, string lastName,
                                                       bool passFail, string description)
         {
-            var customer = new CustomerBuilder(1).WithTestValues()
+            var customer = new CustomerBuilder(1).WithDefaultValues()
                                                  .FirstName(firstName)
                                                  .LastName(lastName)
                                                  .Build();
-            var order = new OrderBuilder().WithTestValues()
+            var order = new OrderBuilder().WithDefaultValues()
                                           .Customer(customer)
                                           .Build();
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
+            order.Customer.FirstName.ShouldBe(firstName);
+            order.Customer.LastName.ShouldBe(lastName);
         }
 
         [Theory]
@@ -114,14 +109,15 @@ namespace BuilderTestSample.Tests
         [InlineData(201, true, "Credit is valid")]
         public void CustomerMustHaveCreditRatingOver200(int creditRating, bool passFail, string description)
         {
-            var customer = new CustomerBuilder(1).WithTestValues()
+            var customer = new CustomerBuilder(1).WithDefaultValues()
                                                  .CreditRating(creditRating)
                                                  .Build();
-            var order = new OrderBuilder().WithTestValues()
+            var order = new OrderBuilder().WithDefaultValues()
                                           .Customer(customer)
                                           .Build();
 
             RunOrderTest(passFail, description, order, typeof(InsufficientCreditException));
+            order.Customer.CreditRating.ShouldBe(creditRating);
         }
 
         [Theory]
@@ -130,14 +126,18 @@ namespace BuilderTestSample.Tests
         [InlineData(+1, true, "Positive Purchases")]
         public void CustomerMustHavePositiveTotalPurchases(decimal totalPurchases, bool passFail, string description)
         {
-            var customer = new CustomerBuilder(1).WithTestValues()
+            var customer = new CustomerBuilder(1).WithDefaultValues()
                                                  .TotalPurchases(totalPurchases)
                                                  .Build();
-            var order = new OrderBuilder().WithTestValues()
+            var orderAmount = 0.01m;
+            var order = new OrderBuilder().WithDefaultValues()
                                           .Customer(customer)
+                                          .TotalAmount(orderAmount)
                                           .Build();
 
             RunOrderTest(passFail, description, order, typeof(InvalidCustomerException));
+            if (passFail)
+                order.Customer.TotalPurchases.ShouldBe(totalPurchases + orderAmount);
         }
 
         [Theory]
@@ -145,18 +145,19 @@ namespace BuilderTestSample.Tests
         [InlineData(true, "Has an address")]
         public void CustomerMustHaveAnAddress(bool hasAddress, string description)
         {
-            Address address = null;
-            if (hasAddress)
-                address = new AddressBuilder().WithDefaultValues().Build();
-
-            var customer = new CustomerBuilder(1).WithTestValues()
+            var address = (hasAddress) ? new AddressBuilder().WithDefaultValues().Build() : null;
+            var customer = new CustomerBuilder(1).WithDefaultValues()
                                                  .HomeAddress(address)
                                                  .Build();
-            var order = new OrderBuilder().WithTestValues()
+            var order = new OrderBuilder().WithDefaultValues()
                                           .Customer(customer)
                                           .Build();
 
             RunOrderTest(hasAddress, description, order, typeof(InvalidCustomerException));
+            if (hasAddress)
+                order.Customer.HomeAddress.ShouldNotBeNull();
+            else
+                order.Customer.HomeAddress.ShouldBeNull();
         }
         #endregion
 
@@ -171,14 +172,42 @@ namespace BuilderTestSample.Tests
             var address = new AddressBuilder().WithDefaultValues()
                                               .Street1(street1)
                                               .Build();
-            var customer = new CustomerBuilder(1).WithTestValues()
-                                                 .HomeAddress(address)
-                                                 .Build();
-            var order = new OrderBuilder().WithTestValues()
-                                          .Customer(customer)
-                                          .Build();
+            var order = BuildOrderToTest(address);
 
             RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.Street1.ShouldBe(street1);
+        }
+
+        [Theory]
+        [InlineData(null, true, "Street2 is null")]
+        [InlineData("", true, "Street2 is empty")]
+        [InlineData(" ", true, "Street2 is blank")]
+        [InlineData("Has value", true, "Street2 has value")]
+        public void AddressStreet2IsNotRequired(string street2, bool passFail, string description)
+        {
+            var address = new AddressBuilder().WithDefaultValues()
+                                              .Street2(street2)
+                                              .Build();
+            var order = BuildOrderToTest(address);
+
+            RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.Street2.ShouldBe(street2);
+        }
+
+        [Theory]
+        [InlineData(null, true, "Street3 is null")]
+        [InlineData("", true, "Street3 is empty")]
+        [InlineData(" ", true, "Street3 is blank")]
+        [InlineData("Has value", true, "Street3 has value")]
+        public void AddressStreet3IsNotRequired(string street3, bool passFail, string description)
+        {
+            var address = new AddressBuilder().WithDefaultValues()
+                                              .Street3(street3)
+                                              .Build();
+            var order = BuildOrderToTest(address);
+
+            RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.Street3.ShouldBe(street3);
         }
 
         [Theory]
@@ -191,14 +220,10 @@ namespace BuilderTestSample.Tests
             var address = new AddressBuilder().WithDefaultValues()
                                               .City(city)
                                               .Build();
-            var customer = new CustomerBuilder(1).WithTestValues()
-                                                 .HomeAddress(address)
-                                                 .Build();
-            var order = new OrderBuilder().WithTestValues()
-                                          .Customer(customer)
-                                          .Build();
+            var order = BuildOrderToTest(address);
 
             RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.City.ShouldBe(city);
         }
 
         [Theory]
@@ -209,16 +234,13 @@ namespace BuilderTestSample.Tests
         public void AddressStateIsRequired(string state, bool passFail, string description)
         {
             var address = new AddressBuilder().WithDefaultValues()
-                                              .City(state)
+                                              .State(state)
                                               .Build();
-            var customer = new CustomerBuilder(1).WithTestValues()
-                                                 .HomeAddress(address)
-                                                 .Build();
-            var order = new OrderBuilder().WithTestValues()
-                                          .Customer(customer)
-                                          .Build();
+            var order = BuildOrderToTest(address);
 
             RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.State.ShouldBe(state);
+
         }
 
         [Theory]
@@ -231,14 +253,10 @@ namespace BuilderTestSample.Tests
             var address = new AddressBuilder().WithDefaultValues()
                                               .PostalCode(postalCode)
                                               .Build();
-            var customer = new CustomerBuilder(1).WithTestValues()
-                                                 .HomeAddress(address)
-                                                 .Build();
-            var order = new OrderBuilder().WithTestValues()
-                                          .Customer(customer)
-                                          .Build();
+            var order = BuildOrderToTest(address);
 
             RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.PostalCode.ShouldBe(postalCode);
         }
 
         [Theory]
@@ -251,14 +269,10 @@ namespace BuilderTestSample.Tests
             var address = new AddressBuilder().WithDefaultValues()
                                               .Country(country)
                                               .Build();
-            var customer = new CustomerBuilder(1).WithTestValues()
-                                                 .HomeAddress(address)
-                                                 .Build();
-            var order = new OrderBuilder().WithTestValues()
-                                          .Customer(customer)
-                                          .Build();
+            var order = BuildOrderToTest(address);
 
             RunOrderTest(passFail, description, order, typeof(InvalidAddressException));
+            order.Customer.HomeAddress.Country.ShouldBe(country);
         }
         #endregion
 
@@ -268,11 +282,11 @@ namespace BuilderTestSample.Tests
         [InlineData(5001, 501, true, "Positive test case")]
         public void ValidateExpediteOrderRules(decimal totalPurchases, int creditRating, bool passFail, string description)
         {
-            var customer = new CustomerBuilder(1).WithTestValues()
+            var customer = new CustomerBuilder(1).WithDefaultValues()
                                                  .TotalPurchases(totalPurchases)
                                                  .CreditRating(creditRating)
                                                  .Build();
-            var order = new OrderBuilder().WithTestValues()
+            var order = new OrderBuilder().WithDefaultValues()
                                           .Customer(customer)
                                           .Build();
 
@@ -286,7 +300,7 @@ namespace BuilderTestSample.Tests
         [Fact]
         public void AddTheOrderToTheCustomer()
         {
-            var order = new OrderBuilder().WithTestValues().Build();
+            var order = new OrderBuilder().WithDefaultValues().Build();
 
             OrderService.PlaceOrder(order);
 
@@ -294,25 +308,37 @@ namespace BuilderTestSample.Tests
             order.Customer.OrderHistory.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void UpdateCustomerTotalPurchases()
+        [Theory]
+        [InlineData(0, 100, 100, "Expect $100")]
+        [InlineData(100, 100, 200, "Expect $200")]
+        public void UpdateCustomerTotalPurchases(decimal customerPurchases, decimal orderAmount, decimal expected, string description)
         {
-            var order = new OrderBuilder().WithTestValues().TotalAmount(100m).Build();
+            var customer = new CustomerBuilder(1).WithDefaultValues()
+                                                 .TotalPurchases(customerPurchases)
+                                                 .Build();
+            var order = new OrderBuilder().WithDefaultValues()
+                                          .TotalAmount(orderAmount)
+                                          .Customer(customer)
+                                          .Build();
 
             OrderService.PlaceOrder(order);
 
-            order.Customer.TotalPurchases.ShouldBe(200m);
+            order.Customer.TotalPurchases.ShouldBe(expected);
+            _logger.WriteLine($"{description}: GOT: {order.Customer.TotalPurchases:C}");
         }
         #endregion
 
         #region Private Test Methods
-        private static Customer BuildTestCustomer(TestCase testCase)
-            => testCase switch
-            {
-                TestCase.UseObjectValidId => new CustomerBuilder(1).WithTestValues().Build(),
-                TestCase.UseObjectInvalidId => new CustomerBuilder(0).WithTestValues().Build(),
-                _ => null,
-            };
+        private static Order BuildOrderToTest(Address address)
+        {
+            var customer = new CustomerBuilder(1).WithDefaultValues()
+                                                 .HomeAddress(address)
+                                                 .Build();
+            var order = new OrderBuilder().WithDefaultValues()
+                                          .Customer(customer)
+                                          .Build();
+            return order;
+        }
 
         private void RunOrderTest(bool passFail, string description, Model.Order order, Type exceptionType)
         {

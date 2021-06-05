@@ -2,6 +2,9 @@
 
 namespace BuilderTestSample.Tests.TestBuilder
 {
+    /// <summary>
+    /// Reference: https://ardalis.com/improve-tests-with-the-builder-pattern-for-test-data
+    /// </summary>
     public class AddressBuilder
     {
         private string _street1;
